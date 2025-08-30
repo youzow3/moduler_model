@@ -28,3 +28,5 @@ gboolean mm_value_info_match_shape (MMValueInfo *value_info,
 /* hash_table should be (char *, int64_t) */
 void mm_value_info_set_dimension (MMValueInfo *value_info,
                                   GHashTable *hash_table);
+size_t mm_value_info_get_element_count (MMValueInfo *value_info);
+size_t mm_value_info_get_data_size (MMValueInfo *value_info);

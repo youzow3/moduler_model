@@ -32,14 +32,13 @@ mm_value_new (MMContext *context, MMValueInfo *info, MMModel *model,
   value = g_new (MMRealValue, 1);
 
   mm_context_ref (context);
-  mm_value_info_ref (info);
   if (model)
     mm_model_ref (model);
   if (swap)
     mm_value_ref (swap);
 
   value->context = context;
-  value->info = info;
+  value->info = mm_value_info_copy (info);
   value->value = NULL;
   value->input_name = g_strdup (input_name);
   value->output_name = g_strdup (output_name);
@@ -87,6 +86,54 @@ mm_value_set_dimension (MMValue *value, GHashTable *hash_table, GError **error)
 
   mm_value_info_set_dimension (value->info, hash_table);
   return mm_value_update (value, error);
+}
+
+gboolean
+mm_value_set_data (MMValue *value, gpointer data, GError **error)
+{
+  MMRealValue *rvalue = (MMRealValue *)value;
+  const OrtApi *api;
+  void *mutable_data;
+  size_t data_size;
+  OrtStatus *status;
+  g_return_val_if_fail (value, FALSE);
+  g_return_val_if_fail (data, FALSE);
+  g_return_val_if_fail ((error == NULL) || (*error == NULL), FALSE);
+  g_return_val_if_fail (rvalue->value, FALSE);
+
+  api = rvalue->context->api;
+  status = api->GetTensorMutableData (rvalue->value, &mutable_data);
+  if (status)
+    goto on_error;
+
+  data_size = mm_value_info_get_data_size (rvalue->info);
+  g_return_val_if_fail (data_size, FALSE);
+  memcpy (mutable_data, data, data_size);
+
+  return TRUE;
+on_error:
+  mm_context_set_error (rvalue->context, error, status);
+  return FALSE;
+}
+
+gpointer
+mm_value_get_data (MMValue *value, GError **error)
+{
+  MMRealValue *rvalue = (MMRealValue *)value;
+  const OrtApi *api;
+  void *data;
+  OrtStatus *status;
+  g_return_val_if_fail (rvalue, NULL);
+  g_return_val_if_fail ((error == NULL) || (*error == NULL), NULL);
+
+  api = rvalue->context->api;
+  status = api->GetTensorMutableData (rvalue->value, &data);
+  if (status)
+    {
+      mm_context_set_error (rvalue->context, error, status);
+      return NULL;
+    }
+  return data;
 }
 
 gboolean

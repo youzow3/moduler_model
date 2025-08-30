@@ -153,3 +153,61 @@ mm_value_info_set_dimension (MMValueInfo *value_info, GHashTable *hash_table)
       rvalue_info->dim[k] = *data;
     }
 }
+
+size_t
+mm_value_info_get_element_count (MMValueInfo *value_info)
+{
+  MMRealValueInfo *rvalue_info = (MMRealValueInfo *)value_info;
+  int64_t element;
+  g_return_val_if_fail (value_info, 0);
+
+  element = 1;
+  for (size_t k = 0; k < rvalue_info->ndim; k++)
+    {
+      g_return_val_if_fail (rvalue_info->dim[k] > 0, 0);
+      element *= rvalue_info->dim[k];
+    }
+  return element;
+}
+
+size_t
+mm_value_info_get_data_size (MMValueInfo *value_info)
+{
+  MMRealValueInfo *rvalue_info = (MMRealValueInfo *)value_info;
+  int64_t element;
+  g_return_val_if_fail (rvalue_info, 0);
+
+  element = mm_value_info_get_element_count (value_info);
+  g_return_val_if_fail (element > 0, 0);
+
+  switch (rvalue_info->dtype)
+    {
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8:
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8:
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_BOOL:
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT8E4M3FN:
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT8E4M3FNUZ:
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT8E5M2:
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT8E5M2FNUZ:
+      return element;
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT16:
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16:
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16:
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_BFLOAT16:
+      return 2 * element;
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT:
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32:
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT32:
+      return 4 * element;
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64:
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT64:
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_DOUBLE:
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_COMPLEX64:
+      return 8 * element;
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT4:
+    case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT4:
+      return (element + 1) / 2;
+    default:
+      g_return_val_if_reached (0);
+    }
+}
