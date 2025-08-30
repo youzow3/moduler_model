@@ -178,6 +178,6 @@ mm_model_run (MMModel *model, MMModelInput *input, MMModelOutput *output,
       return FALSE;
     }
 
-  mm_model_output_update_fast (output);
+  mm_model_output_update (output);
   return TRUE;
 }
