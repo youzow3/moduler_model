@@ -101,3 +101,20 @@ mm_model_io_update (MMModelIO *model_io)
       model_io->values[k] = v->value;
     }
 }
+
+gboolean
+mm_model_io_update_info (MMModelIO *model_io, GError **error)
+{
+  g_return_val_if_fail (model_io, FALSE);
+  g_return_val_if_fail ((error == NULL) || (*error == NULL), FALSE);
+
+  for (size_t k = 0; k < model_io->value_array->len; k++)
+    {
+      MMValue *v = model_io->value_array->pdata[k];
+      v->value = model_io->values[k];
+      if (!mm_value_update_info (v, error))
+        return FALSE;
+    }
+
+  return TRUE;
+}

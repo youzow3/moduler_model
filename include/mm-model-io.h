@@ -26,7 +26,10 @@ void mm_model_io_ref (MMModelIO *model_io);
 void mm_model_io_unref (MMModelIO *model_io);
 gboolean mm_model_io_set_dimension (MMModelIO *model_io,
                                     GHashTable *hash_table, GError **error);
+/* Update values from MMValue */
 void mm_model_io_update (MMModelIO *model_io);
+/* Update MMValue from values */
+gboolean mm_model_io_update_info (MMModelIO *model_io, GError **error);
 
 #define mm_model_input_new(value_array)                                       \
   (MMModelInput *)mm_model_io_new (value_array, TRUE)
@@ -38,6 +41,8 @@ void mm_model_io_update (MMModelIO *model_io);
   mm_model_io_set_dimension ((MMModelIO *)model_input, hash_table, error)
 #define mm_model_input_update(model_input)                                    \
   mm_model_io_update ((MMModelIO *)model_input)
+#define mm_model_input_update_info(model_input, error)                        \
+  mm_model_io_update_info ((MMModelIO *)model_input, error)
 
 #define mm_model_output_new(value_array)                                      \
   (MMModelOutput *)mm_model_io_new (value_array, FALSE)
@@ -49,3 +54,5 @@ void mm_model_io_update (MMModelIO *model_io);
   mm_model_io_set_dimension ((MMModelIO *)model_output, hash_table, error)
 #define mm_model_output_update(model_output)                                  \
   mm_model_io_update ((MMModelIO *)model_output)
+#define mm_model_output_update_info(model_output, error)                      \
+  mm_model_io_update_info ((MMModelIO *)model_output, error)
