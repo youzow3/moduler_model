@@ -34,8 +34,8 @@ void mm_model_io_update (MMModelIO *model_io);
   mm_model_io_ref ((MMModelIO *)model_input)
 #define mm_model_input_unref(model_input)                                     \
   mm_model_io_unref ((MMModelIO *)model_input)
-#define mm_model_input_set_dimension(model_input, hash_table)                 \
-  mm_model_io_set_dimension ((MMModelIO *)model_input, hash_table)
+#define mm_model_input_set_dimension(model_input, hash_table, error)          \
+  mm_model_io_set_dimension ((MMModelIO *)model_input, hash_table, error)
 #define mm_model_input_update(model_input)                                    \
   mm_model_io_update ((MMModelIO *)model_input)
 
@@ -45,7 +45,7 @@ void mm_model_io_update (MMModelIO *model_io);
   mm_model_io_ref ((MMModelIO *)model_output)
 #define mm_model_output_unref(model_output)                                   \
   mm_model_io_unref ((MMModelIO *)model_output)
-#define mm_model_output_set_dimension(model_output, hash_table)               \
-  mm_model_io_set_dimension ((MMModelIO *)model_output, hash_table)
+#define mm_model_output_set_dimension(model_output, hash_table, error)        \
+  mm_model_io_set_dimension ((MMModelIO *)model_output, hash_table, error)
 #define mm_model_output_update(model_output)                                  \
   mm_model_io_update ((MMModelIO *)model_output)
