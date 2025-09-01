@@ -39,6 +39,7 @@ mm_value_new (MMContext *context, MMValueInfo *info, MMModel *model,
 
   value->context = context;
   value->info = mm_value_info_copy (info);
+  value->allocator = NULL;
   value->value = NULL;
   value->input_name = g_strdup (input_name);
   value->output_name = g_strdup (output_name);
