@@ -12,7 +12,7 @@ typedef struct _MMValue MMValue;
 struct _MMValue
 {
   MMValueInfo *info;
-  /* Allocator for value */
+  /* Allocator for value, can be NULL */
   MMAllocator *allocator;
   /* Can be NULL because of symbolic dimension mechanism in ONNXRuntime. */
   OrtValue *value;

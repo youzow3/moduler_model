@@ -187,7 +187,8 @@ mm_value_update (MMValue *value, GError **error)
 
   context = rvalue->context;
   info = rvalue->info;
-  allocator = rvalue->allocator->allocator;
+  allocator = rvalue->allocator ? rvalue->allocator->allocator
+                                : rvalue->context->allocator;
   g_clear_pointer (&rvalue->value, context->api->ReleaseValue);
 
   status = context->api->CreateTensorAsOrtValue (
