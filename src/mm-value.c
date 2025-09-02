@@ -32,8 +32,6 @@ mm_value_new (MMContext *context, MMValueInfo *info, MMModel *model,
   value = g_new (MMRealValue, 1);
 
   mm_context_ref (context);
-  if (model)
-    mm_model_ref (model);
   if (swap)
     mm_value_ref (swap);
 
