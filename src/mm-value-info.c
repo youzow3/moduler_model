@@ -53,6 +53,7 @@ mm_value_info_new (MMContext *context,
   value_info->name = g_strdup (name);
   g_atomic_ref_count_init (&value_info->ref_count);
 
+  g_free(dim_name);
   return (MMValueInfo *)value_info;
 on_ort_error:
   mm_context_set_error (context, error, status);

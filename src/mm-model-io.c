@@ -65,7 +65,7 @@ mm_model_io_unref (MMModelIO *model_io)
     return;
 
   g_free (model_io->values);
-  g_free (model_io->names);
+  g_strfreev (model_io->names);
   g_ptr_array_unref (model_io->value_array);
   g_free (model_io);
 }

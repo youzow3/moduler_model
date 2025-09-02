@@ -2,7 +2,7 @@
 #include "mm-context.h"
 
 typedef struct _MMRealContext MMRealContext;
-G_DEFINE_QUARK (mm - ort, mm_ort);
+G_DEFINE_QUARK (mm-ort, mm_ort);
 
 struct _MMRealContext
 {

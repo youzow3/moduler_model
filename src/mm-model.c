@@ -152,7 +152,7 @@ mm_model_unref (MMModel *model)
 
   g_ptr_array_unref (rmodel->input_infos);
   g_ptr_array_unref (rmodel->output_infos);
-  context->api->ReleaseSession (model->session);
+  context->api->ReleaseSession (rmodel->session);
   mm_model_options_unref (rmodel->options);
   g_free (rmodel);
 }
