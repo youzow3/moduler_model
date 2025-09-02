@@ -27,6 +27,10 @@ MMValue *mm_value_new (MMContext *context, MMValueInfo *info, MMModel *model,
                        MMValue *swap, GError **error);
 void mm_value_ref (MMValue *value);
 void mm_value_unref (MMValue *value);
+/*
+ * set dimension and update value if needed
+ * this function automatically adjust tensor data (Not implemented yet)
+ */
 gboolean mm_value_set_dimension (MMValue *value, GHashTable *hash_table,
                                  GError **error);
 gboolean mm_value_set_data (MMValue *value, gpointer data, GError **error);

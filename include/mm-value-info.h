@@ -25,8 +25,11 @@ void mm_value_info_ref (MMValueInfo *value_info);
 void mm_value_info_unref (MMValueInfo *value_info);
 gboolean mm_value_info_match_shape (MMValueInfo *value_info,
                                     MMValueInfo *other);
-/* hash_table should be (char *, int64_t) */
-void mm_value_info_set_dimension (MMValueInfo *value_info,
-                                  GHashTable *hash_table);
+/*
+ * hash_table should be (char *, int64_t)
+ * returns TRUE if dim is changed, and FALSE if not
+ */
+gboolean mm_value_info_set_dimension (MMValueInfo *value_info,
+                                      GHashTable *hash_table);
 size_t mm_value_info_get_element_count (MMValueInfo *value_info);
 size_t mm_value_info_get_data_size (MMValueInfo *value_info);

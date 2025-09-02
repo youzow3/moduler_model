@@ -131,12 +131,13 @@ mm_value_info_match_shape (MMValueInfo *value_info, MMValueInfo *other)
   return TRUE;
 }
 
-void
+gboolean
 mm_value_info_set_dimension (MMValueInfo *value_info, GHashTable *hash_table)
 {
   MMRealValueInfo *rvalue_info = (MMRealValueInfo *)value_info;
-  g_return_if_fail (rvalue_info);
-  g_return_if_fail (hash_table);
+  gboolean changed = FALSE;
+  g_return_val_if_fail (rvalue_info, FALSE);
+  g_return_val_if_fail (hash_table, FALSE);
 
   for (size_t k = 0; k < rvalue_info->ndim; k++)
     {
@@ -150,8 +151,13 @@ mm_value_info_set_dimension (MMValueInfo *value_info, GHashTable *hash_table)
       data = g_hash_table_lookup (hash_table, dim_name);
       if (data == NULL)
         continue;
+      if (*data == rvalue_info->dim[k])
+        continue;
       rvalue_info->dim[k] = *data;
+      changed = TRUE;
     }
+
+  return changed;
 }
 
 size_t

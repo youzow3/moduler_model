@@ -85,7 +85,8 @@ mm_value_set_dimension (MMValue *value, GHashTable *hash_table, GError **error)
   g_return_val_if_fail (hash_table, FALSE);
   g_return_val_if_fail ((error == NULL) || (*error == NULL), FALSE);
 
-  mm_value_info_set_dimension (value->info, hash_table);
+  if (!mm_value_info_set_dimension (value->info, hash_table))
+    return TRUE;
   return mm_value_update (value, error);
 }
 
@@ -182,6 +183,7 @@ mm_value_update (MMValue *value, GError **error)
   MMContext *context;
   MMValueInfo *info;
   OrtAllocator *allocator;
+  void *data;
   OrtStatus *status;
   g_return_val_if_fail (rvalue, FALSE);
   g_return_val_if_fail ((error == NULL) || (*error == NULL), FALSE);
@@ -196,6 +198,12 @@ mm_value_update (MMValue *value, GError **error)
       allocator, info->dim, info->ndim, info->dtype, &value->value);
   if (status)
     goto on_ort_error;
+
+  status = context->api->GetTensorMutableData (value->value, &data);
+  if (status)
+    goto on_ort_error;
+  memset (data, 0, mm_value_info_get_data_size (value->info));
+
   return TRUE;
 on_ort_error:
   mm_context_set_error (context, error, status);
