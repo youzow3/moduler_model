@@ -396,9 +396,9 @@ mm_file_read (MMFile *file, GError **error)
       goto on_error;
     }
 
-  g_object_unref (file);
+  g_object_unref (stream);
   return TRUE;
 on_error:
-  g_object_unref (file);
+  g_object_unref (stream);
   return FALSE;
 }

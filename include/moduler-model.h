@@ -7,4 +7,5 @@
 #include "mm-model-options.h"
 #include "mm-value.h"
 #include "mm-value-info.h"
+#include "mm-file.h"
 
