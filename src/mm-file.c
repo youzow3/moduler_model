@@ -135,9 +135,9 @@ mm_file_write (MMFile *file, GError **error)
   g_return_val_if_fail (file, FALSE);
   g_return_val_if_fail ((error == NULL) || (*error == NULL), FALSE);
 
-  stream = g_file_create (
-      file->file, G_FILE_CREATE_PRIVATE | G_FILE_CREATE_REPLACE_DESTINATION,
-      NULL, error);
+  stream = g_file_replace (
+      file->file, NULL, FALSE,
+      G_FILE_CREATE_PRIVATE | G_FILE_CREATE_REPLACE_DESTINATION, NULL, error);
   if (stream == NULL)
     return FALSE;
 
