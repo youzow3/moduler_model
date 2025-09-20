@@ -3,8 +3,22 @@
 #include <glib.h>
 #include <onnxruntime_c_api.h>
 
+G_BEGIN_DECLS
+
+/*
+ * MMModelIO
+ * Base structure representing model input/output values and names.
+ */
 typedef struct _MMModelIO MMModelIO;
+/*
+ * MMModelInput
+ * Same as MMModelIO, but it is for model input.
+ */
 typedef struct _MMModelInput MMModelInput;
+/*
+ * MMModelOutput
+ * Same as MMModelIO, but it is for model output.
+ */
 typedef struct _MMModelOutput MMModelOutput;
 
 struct _MMModelInput
@@ -24,11 +38,15 @@ struct _MMModelOutput
 MMModelIO *mm_model_io_new (GPtrArray *value_array, bool is_input);
 void mm_model_io_ref (MMModelIO *model_io);
 void mm_model_io_unref (MMModelIO *model_io);
+/*
+ * Set dynamic dimension. hash_table should be (str, int64_t)
+ * This function calls mm_model_io_update() internally.
+ */
 gboolean mm_model_io_set_dimension (MMModelIO *model_io,
                                     GHashTable *hash_table, GError **error);
-/* Update values from MMValue */
+/* Update values according to MMValue array. */
 void mm_model_io_update (MMModelIO *model_io);
-/* Update MMValue from values */
+/* Update internal MMValue array according to values */
 gboolean mm_model_io_update_info (MMModelIO *model_io, GError **error);
 
 #define mm_model_input_new(value_array)                                       \
@@ -56,3 +74,5 @@ gboolean mm_model_io_update_info (MMModelIO *model_io, GError **error);
   mm_model_io_update ((MMModelIO *)model_output)
 #define mm_model_output_update_info(model_output, error)                      \
   mm_model_io_update_info ((MMModelIO *)model_output, error)
+
+G_END_DECLS

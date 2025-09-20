@@ -6,6 +6,12 @@
 #include "mm-model-io.h"
 #include "mm-model-options.h"
 
+G_BEGIN_DECLS
+
+/*
+ * MMModel
+ * Holds OrtSession and other essential data.
+ */
 typedef struct _MMModel MMModel;
 
 struct _MMModel
@@ -23,7 +29,8 @@ MMModel *mm_model_new (MMModelOptions *options, const char *file_path,
                        GError **error);
 void mm_model_ref (MMModel *model);
 void mm_model_unref (MMModel *model);
-/* Run model. it's recommended to use mm_model_run_with_binding because it
- * provides more flexible input/output handling. */
+/* Run model. input and output should hold valid names and values. */
 gboolean mm_model_run (MMModel *model, MMModelInput *input,
                        MMModelOutput *output, GError **error);
+
+G_END_DECLS

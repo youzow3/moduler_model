@@ -7,6 +7,12 @@
 #include "mm-context.h"
 #include "mm-value-info.h"
 
+G_BEGIN_DECLS
+
+/*
+ * MMValue
+ * Wraps OrtValue and other essential data.
+ */
 typedef struct _MMValue MMValue;
 
 struct _MMValue
@@ -33,10 +39,15 @@ void mm_value_unref (MMValue *value);
  */
 gboolean mm_value_set_dimension (MMValue *value, GHashTable *hash_table,
                                  GError **error);
+/* Set value data. data should be already casted to value's data type. */
 gboolean mm_value_set_data (MMValue *value, gpointer data, GError **error);
+/* Returns pointer to the value's data obtained with GetTensorMutableData() */
 gpointer mm_value_get_data (MMValue *value, GError **error);
 /* Update value->info according to value->value */
 gboolean mm_value_update_info (MMValue *value, GError **error);
 /* Update value->value according to value->info */
 gboolean mm_value_update (MMValue *value, GError **error);
+/* Can be useful for attention layer...? See source code. */
 void mm_value_swap (MMValue *value);
+
+G_END_DECLS
