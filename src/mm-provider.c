@@ -51,6 +51,7 @@ mm_provider_new (MMContext *context, MMProviderName name, GError **error)
   GDestroyNotify release_func;
   g_return_val_if_fail (context, NULL);
   g_return_val_if_fail (name != MM_PROVIDER_NULL, NULL);
+  g_return_val_if_fail ((error == NULL) || (*error == NULL), NULL);
 
   provider = g_new0 (MMRealProvider, 1);
   provider->name = name;

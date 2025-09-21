@@ -29,6 +29,10 @@ mm_model_options_new (MMContext *context, GError **error)
   if (status)
     goto on_ort_error;
 
+  status = context->api->SetSessionGraphOptimizationLevel(session_options, ORT_ENABLE_ALL);
+  if (status)
+    goto on_ort_error;
+
   status = context->api->CreateRunOptions (&run_options);
   if (status)
     goto on_ort_error;
@@ -85,6 +89,7 @@ mm_model_options_append_provider (MMModelOptions *model_options,
   OrtStatus *status;
   g_return_val_if_fail (rmodel_options, FALSE);
   g_return_val_if_fail (provider, FALSE);
+  g_return_val_if_fail ((error == NULL) || (*error == NULL), FALSE);
 
   context = model_options->context;
   switch (provider->name)
