@@ -9,6 +9,8 @@ struct _MMRealContext
   const OrtApi *api;
   OrtEnv *env;
   OrtAllocator *allocator;
+  char **execution_providers;
+  int execution_providers_length;
   gatomicrefcount ref_count;
 };
 
@@ -32,6 +34,11 @@ mm_context_new (GError **error)
     goto on_ort_error;
 
   status = api->GetAllocatorWithDefaultOptions (&allocator);
+  if (status)
+    goto on_ort_error;
+
+  status = api->GetAvailableProviders (&context->execution_providers,
+                                       &context->execution_providers_length);
   if (status)
     goto on_ort_error;
 
@@ -66,6 +73,10 @@ mm_context_unref (MMContext *context)
   g_return_if_fail (rcontext);
   if (!g_atomic_ref_count_dec (&rcontext->ref_count))
     return;
+  g_assert (
+      rcontext->api->ReleaseAvailableProviders (
+          rcontext->execution_providers, rcontext->execution_providers_length)
+      == NULL);
   rcontext->api->ReleaseEnv (rcontext->env);
   g_free (context);
 }
@@ -78,4 +89,16 @@ mm_context_set_error (MMContext *context, GError **err, OrtStatus *status)
   g_set_error (err, MM_ORT_ERROR, context->api->GetErrorCode (status), "%s",
                context->api->GetErrorMessage (status));
   context->api->ReleaseStatus (status);
+}
+
+GStrv
+mm_context_get_available_execution_provider (MMContext *context)
+{
+  MMRealContext *rcontext = (MMRealContext *)context;
+  GStrvBuilder *builder;
+  g_return_val_if_fail (rcontext, NULL);
+  builder = g_strv_builder_new ();
+  for (int k = 0; k < rcontext->execution_providers_length; k++)
+    g_strv_builder_add (builder, rcontext->execution_providers[k]);
+  return g_strv_builder_unref_to_strv (builder);
 }

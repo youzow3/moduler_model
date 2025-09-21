@@ -31,5 +31,12 @@ void mm_context_unref (MMContext *context);
  */
 void mm_context_set_error (MMContext *context, GError **err,
                            OrtStatus *status);
+/*
+ * Returns available execution providers.
+ * These strings can be used to initialize MMProvider by using
+ * mm_provider_name_from_str()
+ * Returned value should be freed with g_strfreev().
+ */
+GStrv mm_context_get_available_execution_provider (MMContext *context);
 
 G_END_DECLS
