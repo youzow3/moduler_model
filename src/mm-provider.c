@@ -36,6 +36,7 @@ struct _MMRealProvider
     OrtROCMProviderOptions *rocm;
     OrtMIGraphXProviderOptions *mi_graph_x;
     OrtOpenVINOProviderOptions *open_vino;
+    void *ep_options;
   };
 
   MMContext *context;
@@ -47,44 +48,54 @@ mm_provider_new (MMContext *context, MMProviderName name, GError **error)
 {
   MMRealProvider *provider;
   OrtStatus *status;
+  GDestroyNotify release_func;
   g_return_val_if_fail (context, NULL);
   g_return_val_if_fail (name != MM_PROVIDER_NULL, NULL);
 
   provider = g_new0 (MMRealProvider, 1);
+  provider->name = name;
   switch (name)
     {
     case MM_PROVIDER_TENSOR_RT:
       status
           = context->api->CreateTensorRTProviderOptions (&provider->tensor_rt);
+      release_func = (GDestroyNotify)context->api->ReleaseTensorRTProviderOptions;
       break;
     case MM_PROVIDER_CUDA:
       status = context->api->CreateCUDAProviderOptions (&provider->cuda);
+      release_func = (GDestroyNotify)context->api->ReleaseCUDAProviderOptions;
       break;
     case MM_PROVIDER_CANN:
       status = context->api->CreateCANNProviderOptions (&provider->cann);
+      release_func = (GDestroyNotify)context->api->ReleaseCANNProviderOptions;
       break;
     case MM_PROVIDER_DNNL:
       status = context->api->CreateDnnlProviderOptions (&provider->dnnl);
+      release_func = (GDestroyNotify)context->api->ReleaseDnnlProviderOptions;
       break;
     case MM_PROVIDER_ROCM:
       status = context->api->CreateROCMProviderOptions (&provider->rocm);
+      release_func = (GDestroyNotify)context->api->ReleaseROCMProviderOptions;
       break;
     default:
       g_warn_if_reached ();
       status = NULL;
+      release_func = NULL;
       break;
     }
 
   if (status)
     goto on_error;
 
-  mm_context_ref (provider->context);
+  mm_context_ref (context);
   provider->context = context;
   g_atomic_ref_count_init (&provider->ref_count);
 
   return (MMProvider *)provider;
 on_error:
   mm_context_set_error (context, error, status);
+  g_clear_pointer(&provider->ep_options, release_func);
+  g_free(provider);
   return NULL;
 }
 
