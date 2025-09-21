@@ -8,15 +8,15 @@ mm_provider_name_from_str (const char *name)
 {
   g_return_val_if_fail (name, MM_PROVIDER_NULL);
 
-  if (!strcmp (name, "TensorRT"))
+  if (!strcmp (name, "TensorRTExecutionProvider"))
     return MM_PROVIDER_TENSOR_RT;
-  if (!strcmp (name, "CUDA"))
+  if (!strcmp (name, "CUDAExecutionProvider"))
     return MM_PROVIDER_CUDA;
-  if (!strcmp (name, "CANN"))
+  if (!strcmp (name, "CANNExecutionProvider"))
     return MM_PROVIDER_CANN;
-  if (!strcmp (name, "Dnnl"))
+  if (!strcmp (name, "DnnlExecutionProvider"))
     return MM_PROVIDER_DNNL;
-  if (!strcmp (name, "ROCM"))
+  if (!strcmp (name, "ROCMExecutionProvider"))
     return MM_PROVIDER_ROCM;
   g_return_val_if_reached (MM_PROVIDER_NULL);
 }
