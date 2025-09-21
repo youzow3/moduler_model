@@ -124,5 +124,5 @@ mm_model_options_append_provider (MMModelOptions *model_options,
   return TRUE;
 on_error:
   mm_context_set_error (model_options->context, error, status);
-  return NULL;
+  return FALSE;
 }

@@ -13,7 +13,7 @@ inc = include_directories('include')
 moduler_model = library('moduler_model',
   'src/mm-allocator.c', 'src/mm-context.c', 'src/mm-model.c',
   'src/mm-model-io.c', 'src/mm-model-options.c', 'src/mm-value.c',
-  'src/mm-value-info.c', 'src/mm-file.c',
+  'src/mm-value-info.c', 'src/mm-file.c', 'src/mm-provider.c',
   include_directories: inc, dependencies: [onnxruntime_dep, glib_dep, gio_dep])
 
 moduler_model_dep = declare_dependency(
